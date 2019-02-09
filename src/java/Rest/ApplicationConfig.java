@@ -10,7 +10,7 @@ import javax.ws.rs.core.Application;
 
 /**
  *
- * @author John Wick Recargado
+ * @author ARCADE Software MX
  */
 @javax.ws.rs.ApplicationPath("api")
 public class ApplicationConfig extends Application {

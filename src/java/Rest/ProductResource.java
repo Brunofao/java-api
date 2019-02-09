@@ -26,7 +26,7 @@ import javax.ws.rs.core.Response;
 /**
  * REST Web Service
  *
- * @author John Wick Recargado
+ * @author ARCADE Software MX
  */
 @Path("product")
 public class ProductResource {
@@ -48,7 +48,7 @@ public class ProductResource {
         try {
             ProductService pservice = new ProductService();
             pservice.create(p);
-            return Response.ok(new Gson().toJson(p), MediaType.APPLICATION_JSON).build();
+            return Response.ok("Success" /* new Gson().toJson(p) */, MediaType.APPLICATION_JSON).build();
         } catch (SQLException e) {
             return Response.status(Response.Status.SEE_OTHER).entity(e.toString()).build();
         }
