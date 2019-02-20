@@ -33,4 +33,8 @@ public class ProductService {
     public List<Product> read() throws SQLException {
         return pdao.read();
     }
+    
+    public Product read(int id) throws SQLException {
+        return pdao.read(id);
+    }
 }

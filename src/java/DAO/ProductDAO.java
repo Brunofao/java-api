@@ -108,4 +108,40 @@ public class ProductDAO {
     // Return the final list w/ product(s)
     return lop;
     }
+    
+    public Product read(int id) throws SQLException {
+        
+        // Generate connection
+        Connection con = ConnectionDB.getConnection();
+        
+        // SQL Query to Database
+        String sql = "SELECT * FROM `Product` WHERE id = " + id;
+        
+        // PreparedStatement & ResultSet to inject the Query
+        PreparedStatement ps = con.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        
+        // List of Product(s)
+        // List<Product> lop = new ArrayList<>();
+        Product p = new Product();
+        
+        try {
+            while(rs.next()) {
+                int qid = rs.getInt("id");
+                String name = rs.getString("name");
+                int price = rs.getInt("price");
+                String desc = rs.getString("desc");
+                p.setName(name);
+                p.setDesc(desc);
+                p.setPrice(price); 
+            }
+        } catch(SQLException e) {
+            System.out.println("ProductDAO read error");
+        } finally {
+            // Close the DB
+            con.close();
+        }
+    // Return the final list w/ product(s)
+    return p;
+    }
 }

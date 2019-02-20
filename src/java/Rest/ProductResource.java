@@ -18,6 +18,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
@@ -41,21 +42,21 @@ public class ProductResource {
     }
 
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
+    // @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("add")
     public Response create(Product p){
         try {
             ProductService pservice = new ProductService();
             pservice.create(p);
-            return Response.ok("Success" /* new Gson().toJson(p) */, MediaType.APPLICATION_JSON).build();
+            return Response.ok(new Gson().toJson(p), MediaType.APPLICATION_JSON).build();
         } catch (SQLException e) {
             return Response.status(Response.Status.SEE_OTHER).entity(e.toString()).build();
         }
     }
     
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
+    // @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("addgroup")
     public Response create(Product[] p){
@@ -88,4 +89,45 @@ public class ProductResource {
             return Response.status(Response.Status.SEE_OTHER).entity(e.toString()).build();
         }
     }
+    
+    // Manera 1
+    @GET
+    @Path("{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public void read(@Suspended
+    final AsyncResponse asyncResponse, @PathParam("id") int id) {
+        executorService.submit(() -> {
+            asyncResponse.resume(doRead(id));
+        });
+    }
+
+    private Response doRead(int id) {
+        try {
+            String JSON = new Gson().toJson(new ProductService().read(id));
+            return Response.ok(JSON, MediaType.APPLICATION_JSON).build();
+        } catch(SQLException e) {
+            return Response.status(Response.Status.SEE_OTHER).entity(e.toString()).build();
+        }
+    }
+    
+    // Manera 2
+//    @GET
+//    @Path("{id}")
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response read(@PathParam("id") int id) {
+//        try {
+//            String JSON = new Gson().toJson(new ProductService().read(id));
+//            return Response.ok(JSON, MediaType.APPLICATION_JSON).build();
+//        } catch(SQLException e) {
+//            return Response.status(Response.Status.SEE_OTHER).entity(e.toString()).build();
+//        }
+//    }
+    
+    // Manera 3
+//    @GET
+//    @Path("{id}")
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response read(@PathParam("id") int id) throws SQLException {
+//        return Response.status(200).entity(new ProductService().read(id)).build();
+//    }
 }
